@@ -54,7 +54,7 @@
     const output = document.getElementById("output")
     const template = document.getElementById("template")
 
-    const converter = (x, a) => [...new TextEncoder().encode(x)].map(x => x.toString(a.length).padStart(Math.ceil(Math.log(256) / Math.log(a.length)), "0").replace(/[0-9a-fA-F]/g, (x) => a[parseInt(x, a.length)])).join("")
+    const converter = (x, a) => [...new TextEncoder().encode(x)].map(x => x.toString(a.length).padStart(Math.ceil(Math.log(256) / Math.log(a.length)), "0").replace(/[0-9a-zA-Z]/g, (x) => a[parseInt(x, a.length)])).join("")
 
     const convert = () => {
       output.value = converter(input.value, template.value.split(/\r\n|\r|\n/))
