@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://ikasoba.github.io/proto-css/src/proto.css" />
+  <style>
+    .textarea-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    textarea {
+      width: 100%;
+      height: 8rem;
+
+      resize: vertical;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <main p-center>
+    <div style="width: 100%; margin: 0 4rem;">
+      <h1>
+        ゴリラ語変換
+      </h1>
+      <div class="textarea-container" p-box>
+        入力
+        <textarea id="input"></textarea>
+      </div>
+      <div class="textarea-container" p-box>
+        出力
+        <textarea disabled id="output"></textarea>
+      </div>
+      <details p-box>
+        <summary>詳細</summary>
+        <textarea id="template">
+ウ
+ッ
+ホ
+イ</textarea>
+      </details>
+    </div>
+  </main>
+  <script>
+    /** @type {HTMLTextAreaElement} */
+    const input = document.getElementById("input")
+    const output = document.getElementById("output")
+    const template = document.getElementById("template")
+
+    const converter = (x, a) => [...new TextEncoder().encode(x)].map(x => x.toString(a.length).padStart(Math.ceil(Math.log(256) / Math.log(a.length)), "0").replace(/[0-9a-fA-F]/g, (x) => a[parseInt(x, a.length)])).join("")
+
+    const convert = () => {
+      output.value = converter(input.value, template.value.split(/\r\n|\r|\n/))
+    }
+
+    input.addEventListener("input", () => {
+      convert()
+    })
+
+    template.addEventListener("input", () => {
+      convert()
+    })
+  </script>
+</body>
+</html>
