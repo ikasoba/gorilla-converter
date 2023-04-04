@@ -54,14 +54,40 @@
     const output = document.getElementById("output")
     const template = document.getElementById("template")
 
-    const converter = (x, a) => [...new TextEncoder().encode(x)].map(x => x.toString(a.length).padStart(Math.ceil(Math.log(256) / Math.log(a.length)), "0").replace(/[0-9a-zA-Z]/g, (x) => a[parseInt(x, a.length)])).join("")
+    const encode = (x, a) => {
+      const res = [];
+      let tmp = [...(new TextEncoder().encode(x))].reduce((p, c, i) => p + BigInt(c) * 256n ** BigInt(i), 0n)
+      while (tmp > 0n){
+        res.push(a[tmp % BigInt(a.length)])
+        tmp /= BigInt(a.length)
+      }
+      return res.join("")
+    }
+    const decode = (x, a) => {
+      const res = []
+      let tmp = [...x].reduce((p, c, i) => p + BigInt(a.indexOf(c)) * BigInt(a.length) ** BigInt(i), 0n)
+      while (tmp > 0n){
+        res.push(Number(tmp % 256n))
+        tmp /= 256n
+      }
+      return new TextDecoder().decode(new Uint8Array(res))
+    }
 
-    const convert = () => {
-      output.value = converter(input.value, template.value.split(/\r\n|\r|\n/))
+    const convertTo = () => {
+      output.value = encode(input.value, template.value.split(/\r\n|\r|\n/))
+    }
+
+    const convertFrom = () => {
+      output.value = decode(input.value, template.value.split(/\r\n|\r|\n/))
     }
 
     input.addEventListener("input", () => {
-      convert()
+      const tmp = template.value.split(/\r\n|\r|\n/)
+      if ([...input.value].every(x => tmp.indexOf(x) != -1)){
+        convertFrom()
+      }else{
+        convertTo()
+      }
     })
 
     template.addEventListener("input", () => {
