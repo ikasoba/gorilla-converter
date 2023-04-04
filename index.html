@@ -81,18 +81,18 @@
       output.value = decode(input.value, template.value.split(/\r\n|\r|\n/))
     }
 
-    input.addEventListener("input", () => {
+    const onChange = () => {
       const tmp = template.value.split(/\r\n|\r|\n/)
       if ([...input.value].every(x => tmp.indexOf(x) != -1)){
         convertFrom()
       }else{
         convertTo()
       }
-    })
+    }
 
-    template.addEventListener("input", () => {
-      convert()
-    })
+    input.addEventListener("input", onChange)
+
+    template.addEventListener("input", onChange)
   </script>
 </body>
 </html>
